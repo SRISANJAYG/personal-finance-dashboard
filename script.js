@@ -1,137 +1,129 @@
 const list = document.getElementById('history-list');
-const ledgerForm = document.getElementById('ledger-form');
-const balanceDisplay = document.getElementById('total-val');
-const incDisplay = document.getElementById('inc-val');
-const expDisplay = document.getElementById('exp-val');
-const navTabs = document.querySelectorAll('.nav-item');
-const panels = document.querySelectorAll('.view-panel');
-const headTitle = document.getElementById('view-title');
+const entryForm = document.getElementById('entry-form');
+const balanceEl = document.getElementById('net-balance');
+const incEl = document.getElementById('inc-total');
+const expEl = document.getElementById('exp-total');
+const navItems = document.querySelectorAll('.nav-item, .nav-links li');
+const panels = document.querySelectorAll('.panel');
+const viewTitle = document.getElementById('view-title');
 
-let dataStore = JSON.parse(localStorage.getItem('ledger_data')) || [];
+window.transactions = JSON.parse(localStorage.getItem('finance_data')) || [];
 let donut;
-let line;
+let trend;
+let usdToInr = 83.00;
 
-navTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-        const key = tab.getAttribute('data-section');
-        navTabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        const target = item.getAttribute('data-section');
+        navItems.forEach(n => n.classList.remove('active'));
+        item.classList.add('active');
 
         panels.forEach(p => {
             p.classList.add('hidden');
-            if(p.id === `${key}-section`) p.classList.remove('hidden');
+            if(p.id === `${target}-section`) p.classList.remove('hidden');
         });
 
-        headTitle.innerText = tab.innerText;
-        if(key === 'reports') drawLine();
+        viewTitle.innerText = item.innerText;
+        if(target === 'reports') renderTrend();
     });
 });
 
-function setupCharts() {
-    const ctxD = document.getElementById('mainDonut').getContext('2d');
+async function fetchRates() {
+    try {
+        const res = await fetch('https://open.er-api.com/v6/latest/USD');
+        const data = await res.json();
+        usdToInr = data.rates.INR;
+        document.getElementById('api-widget').innerHTML = `Market USD/INR: ₹${usdToInr.toFixed(2)}`;
+    } catch (e) {
+        document.getElementById('api-widget').innerText = "Market Offline";
+    }
+}
+
+function initUI() {
+    const ctxD = document.getElementById('donutChart').getContext('2d');
     donut = new Chart(ctxD, {
         type: 'doughnut',
         data: {
-            labels: ['In', 'Out'],
-            datasets: [{
-                data: [0, 0],
-                backgroundColor: ['#10b981', '#f43f5e'],
-                borderWidth: 0
-            }]
+            labels: ['Income', 'Expenses'],
+            datasets: [{ data: [0, 0], backgroundColor: ['#10b981', '#f43f5e'], borderWidth: 0 }]
         },
         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' }}}}
     });
 
-    const ctxL = document.getElementById('trendLine').getContext('2d');
-    line = new Chart(ctxL, {
+    const ctxL = document.getElementById('lineTrend').getContext('2d');
+    trend = new Chart(ctxL, {
         type: 'line',
         data: {
             labels: [],
-            datasets: [{
-                label: 'Balance History',
-                data: [],
-                borderColor: '#8b5cf6',
-                backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                fill: true,
-                tension: 0.4
-            }]
+            datasets: [{ label: 'Balance', data: [], borderColor: '#8b5cf6', fill: true, tension: 0.4, backgroundColor: 'rgba(139, 92, 246, 0.1)' }]
         },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-            }
-        }
+        options: { responsive: true, maintainAspectRatio: false }
     });
 }
 
-function drawLine() {
-    if (!line) return;
-    let cumm = 0;
-    const stamps = dataStore.map(t => t.stamp.split(',')[0]);
-    const values = dataStore.map(t => {
-        cumm += t.qty;
-        return cumm;
+function renderTrend() {
+    if (!trend) return;
+    let current = 0;
+    trend.data.labels = window.transactions.map(t => t.date.split(',')[0]);
+    trend.data.datasets[0].data = window.transactions.map(t => {
+        current += t.amount;
+        return current;
     });
-    line.data.labels = stamps;
-    line.data.datasets[0].data = values;
-    line.update();
+    trend.update();
 }
 
 function sync() {
-    const qtys = dataStore.map(t => t.qty);
-    const net = qtys.reduce((a, b) => (a += b), 0).toFixed(2);
-    const pos = qtys.filter(x => x > 0).reduce((a, b) => (a += b), 0).toFixed(2);
-    const neg = qtys.filter(x => x < 0).reduce((a, b) => (a += b), 0).toFixed(2);
+    const vals = window.transactions.map(t => t.amount);
+    const net = vals.reduce((a, b) => (a += b), 0).toFixed(2);
+    const inc = vals.filter(x => x > 0).reduce((a, b) => (a += b), 0).toFixed(2);
+    const exp = vals.filter(x => x < 0).reduce((a, b) => (a += b), 0).toFixed(2);
 
-    balanceDisplay.innerText = `$${net}`;
-    incDisplay.innerText = `+$${pos}`;
-    expDisplay.innerText = `-$${Math.abs(neg).toFixed(2)}`;
+    balanceEl.innerText = `$${net}`;
+    incEl.innerText = `+$${inc}`;
+    expEl.innerText = `-$${Math.abs(exp).toFixed(2)}`;
 
     if(donut) {
-        donut.data.datasets[0].data = [pos, Math.abs(neg)];
+        donut.data.datasets[0].data = [inc, Math.abs(exp)];
         donut.update();
     }
 
-    const ratio = Math.min((net / 5000) * 100, 100);
-    document.getElementById('bar-inner').style.width = net > 0 ? `${ratio}%` : '0%';
-    document.getElementById('goal-stat').innerText = `${Math.floor(ratio)}% toward $5,000 monthly target`;
+    const pct = Math.min((net / 5000) * 100, 100);
+    document.getElementById('progress-inner').style.width = net > 0 ? `${pct}%` : '0%';
+    document.getElementById('progress-label').innerText = `${Math.floor(pct)}% of $5,000 target`;
 
-    refreshList();
-    localStorage.setItem('ledger_data', JSON.stringify(dataStore));
-}
-
-function refreshList() {
     list.innerHTML = '';
-    dataStore.forEach(t => {
-        const row = document.createElement('li');
-        row.classList.add(t.qty < 0 ? 'minus' : 'plus');
-        row.innerHTML = `
-            <div class="item-meta">
-                <strong>${t.label}</strong>
-                <span class="item-date">${t.stamp}</span>
-            </div>
-            <span>${t.qty < 0 ? '-' : '+'}$${Math.abs(t.qty)}</span>
-        `;
-        list.appendChild(row);
+    window.transactions.forEach(t => {
+        const li = document.createElement('li');
+        li.className = t.amount < 0 ? 'minus' : 'plus';
+        li.innerHTML = `<div><strong>${t.desc}</strong><br><small>${t.date}</small></div><span>${t.amount < 0 ? '-' : '+'}$${Math.abs(t.amount).toFixed(2)}</span>`;
+        list.appendChild(li);
     });
+
+    localStorage.setItem('finance_data', JSON.stringify(window.transactions));
 }
 
-ledgerForm.addEventListener('submit', (e) => {
+entryForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    const entry = {
-        uid: Date.now(),
-        label: document.getElementById('desc-input').value,
-        qty: +document.getElementById('amt-input').value,
-        stamp: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-    };
-    dataStore.push(entry);
+    
+    let rawAmount = +document.getElementById('item-amt').value;
+    const selectedCurr = document.getElementById('item-curr').value;
+    
+    if (selectedCurr === 'INR') {
+        rawAmount = rawAmount / usdToInr;
+    }
+
+    window.transactions.push({
+        id: Date.now(),
+        desc: document.getElementById('item-desc').value,
+        amount: rawAmount,
+        date: new Date().toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+    });
+    
     sync();
-    ledgerForm.reset();
+    entryForm.reset();
 });
 
-document.getElementById('date-string').innerText = new Date().toDateString();
-setupCharts();
+document.getElementById('current-date').innerText = new Date().toDateString();
+fetchRates();
+initUI();
 sync();
