@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinanceDash Pro</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-wrapper">
+        <nav class="sidebar">
+            <div class="logo">📊 Finance<span>Dash</span></div>
+            <ul class="nav-links">
+                <li class="nav-item active" data-section="dashboard">Dashboard</li>
+                <li class="nav-item" data-section="transactions">Transactions</li>
+                <li class="nav-item" data-section="reports">Reports</li>
+                <li class="nav-item" data-section="budget">Budget</li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <h2 id="view-title">Dashboard</h2>
+                <div id="date-string"></div>
+            </header>
+
+            <div id="render-area">
+                <div id="dashboard-section" class="view-panel">
+                    <div class="summary-cards">
+                        <div class="card">
+                            <small>Net Worth</small>
+                            <h2 id="total-val">$0.00</h2>
+                        </div>
+                        <div class="card">
+                            <small>Total Income</small>
+                            <h3 id="inc-val" class="success-text">+$0.00</h3>
+                        </div>
+                        <div class="card">
+                            <small>Total Expenses</small>
+                            <h3 id="exp-val" class="danger-text">-$0.00</h3>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card chart-wrapper">
+                            <h3>Expense Distribution</h3>
+                            <div class="canvas-box">
+                                <canvas id="mainDonut"></canvas>
+                            </div>
+                        </div>
+                        <div class="card entry-form">
+                            <h3>Quick Add</h3>
+                            <form id="ledger-form">
+                                <input type="text" id="desc-input" placeholder="What for?" required>
+                                <input type="number" id="amt-input" placeholder="Amount (negative for expense)" required>
+                                <button type="submit" class="action-btn">Post Transaction</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="transactions-section" class="view-panel hidden">
+                    <div class="card">
+                        <h3>Detailed History</h3>
+                        <ul id="history-list" class="ledger-list"></ul>
+                    </div>
+                </div>
+
+                <div id="reports-section" class="view-panel hidden">
+                    <div class="card">
+                        <h3>Balance Trend</h3>
+                        <div class="canvas-box" style="height: 400px;">
+                            <canvas id="trendLine"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="budget-section" class="view-panel hidden">
+                    <div class="card">
+                        <h3>Goal Tracking</h3>
+                        <div class="goal-container">
+                            <p>Monthly Target: $5,000.00</p>
+                            <div class="bar-outer">
+                                <div id="bar-inner" class="bar-fill"></div>
+                            </div>
+                            <small id="goal-stat" class="muted-text"></small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
