@@ -22,7 +22,9 @@ Managing personal daily expenses often feels scattered or overly complex with ma
 * **Attribute Management:** Leveraging `data-` attributes to handle navigation and unique transaction IDs.
 
 ## Steps to Run the Project
-1. Clone the repository: `git clone <your-repo-link>`
+1. Clone the repository:```bash
+    git clone [https://github.com/SRISANJAYG/personal-finance-dashboard.git](https://github.com/SRISANJAYG/personal-finance-dashboard.git)
+    ```
 2. Navigate to the project folder.
 3. Open `index.html` in any modern web browser.
 4. (Optional) Use a Live Server extension in VS Code for a better development experience.
