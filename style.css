@@ -1,8 +1,8 @@
 :root {
-  --bg-main: #0f172a;
-  --bg-side: #1e1b4b;
-  --bg-card: #1e293b;
-  --accent: #8b5cf6;
+  --bg-dark: #0f172a;
+  --side-bg: #1e1b4b;
+  --card-bg: #1e293b;
+  --primary: #8b5cf6;
   --white: #f8fafc;
   --muted: #94a3b8;
   --border: #334155;
@@ -12,11 +12,11 @@
 
 * {
   box-sizing: border-box;
-  font-family: "Segoe UI", Roboto, sans-serif;
+  font-family: "Segoe UI", sans-serif;
 }
 body {
   margin: 0;
-  background-color: var(--bg-main);
+  background-color: var(--bg-dark);
   color: var(--white);
 }
 
@@ -27,58 +27,65 @@ body {
 
 .sidebar {
   width: 260px;
-  background: var(--bg-side);
+  background: var(--side-bg);
   padding: 30px;
   border-right: 1px solid var(--border);
 }
 .logo {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 1.6rem;
+  font-weight: bold;
   margin-bottom: 50px;
 }
 .logo span {
-  color: var(--accent);
+  color: var(--primary);
 }
 .nav-links {
   list-style: none;
   padding: 0;
 }
 .nav-item {
-  padding: 14px 20px;
-  margin-bottom: 12px;
-  border-radius: 12px;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 10px;
   cursor: pointer;
   color: var(--muted);
-  transition: 0.25s;
 }
 .nav-item.active {
-  background: var(--accent);
+  background: var(--primary);
   color: white;
 }
 
-.main-content {
+.content-area {
   flex: 1;
   padding: 40px;
   overflow-y: auto;
 }
-.top-bar {
+.top-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 40px;
 }
+.api-status {
+  background: #1e293b;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  border: 1px solid var(--border);
+  margin-right: 15px;
+}
+
 .hidden {
   display: none !important;
 }
-
 .card {
-  background: var(--bg-card);
+  background: var(--card-bg);
   padding: 25px;
-  border-radius: 20px;
+  border-radius: 16px;
   border: 1px solid var(--border);
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
-.summary-cards {
+.stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
@@ -87,91 +94,87 @@ body {
 
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 1.4fr 1fr;
   gap: 25px;
 }
-.canvas-box {
+.canvas-wrapper {
   position: relative;
-  height: 320px;
+  height: 300px;
   width: 100%;
 }
 
-.ledger-list {
+.ledger {
   list-style: none;
   padding: 0;
 }
-.ledger-list li {
+.ledger li {
   background: #111827;
-  padding: 18px;
-  margin-bottom: 15px;
-  border-radius: 14px;
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 12px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  border-left: 6px solid transparent;
+  border-left: 5px solid transparent;
 }
-.ledger-list li.plus {
+.ledger li.plus {
   border-left-color: var(--green);
 }
-.ledger-list li.minus {
+.ledger li.minus {
   border-left-color: var(--red);
 }
 
-.item-meta {
+.input-row {
   display: flex;
-  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
-.item-date {
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-top: 5px;
-}
-
-input {
-  width: 100%;
-  padding: 15px;
+input,
+select {
+  padding: 14px;
   background: #0f172a;
   border: 1px solid var(--border);
   color: white;
-  border-radius: 12px;
+  border-radius: 10px;
+}
+input {
+  flex: 1;
+}
+select {
+  width: 100px;
+  cursor: pointer;
+}
+#item-desc {
+  width: 100%;
   margin-bottom: 20px;
 }
-.action-btn {
+
+.submit-btn {
   width: 100%;
-  padding: 16px;
-  background: var(--accent);
+  padding: 15px;
+  background: var(--primary);
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: bold;
 }
-.action-btn:hover {
-  background: #7c3aed;
-}
 
-.success-text {
+.text-green {
   color: var(--green);
 }
-.danger-text {
+.text-red {
   color: var(--red);
 }
-.muted-text {
-  color: var(--muted);
-  display: block;
-  margin-top: 10px;
-}
-
-.bar-outer {
+.progress-outer {
   background: #0f172a;
-  height: 14px;
-  border-radius: 7px;
-  margin-top: 20px;
+  height: 12px;
+  border-radius: 6px;
+  margin-top: 15px;
   overflow: hidden;
 }
-.bar-fill {
-  background: var(--accent);
+.progress-bar {
+  background: var(--primary);
   height: 100%;
   width: 0%;
-  transition: 0.8s ease-in-out;
+  transition: 0.6s ease;
 }
