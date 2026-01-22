@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinanceDash Pro</title>
+    <title>FinanceDash Pro | Personal Ledger</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -19,73 +19,79 @@
             </ul>
         </nav>
 
-        <main class="main-content">
-            <header class="top-bar">
+        <main class="content-area">
+            <header class="top-nav">
                 <h2 id="view-title">Dashboard</h2>
-                <div id="date-string"></div>
+                <div class="header-right">
+                    <div id="api-widget" class="api-status">Connecting to Market...</div>
+                    <div id="current-date"></div>
+                </div>
             </header>
 
-            <div id="render-area">
-                <div id="dashboard-section" class="view-panel">
-                    <div class="summary-cards">
+            <div id="main-view">
+                <div id="dashboard-section" class="panel">
+                    <div class="stats-row">
                         <div class="card">
-                            <small>Net Worth</small>
-                            <h2 id="total-val">$0.00</h2>
+                            <small>Net Worth (USD)</small>
+                            <h2 id="net-balance">$0.00</h2>
                         </div>
                         <div class="card">
                             <small>Total Income</small>
-                            <h3 id="inc-val" class="success-text">+$0.00</h3>
+                            <h3 id="inc-total" class="text-green">+$0.00</h3>
                         </div>
                         <div class="card">
                             <small>Total Expenses</small>
-                            <h3 id="exp-val" class="danger-text">-$0.00</h3>
+                            <h3 id="exp-total" class="text-red">-$0.00</h3>
                         </div>
                     </div>
 
                     <div class="dashboard-grid">
-                        <div class="card chart-wrapper">
-                            <h3>Expense Distribution</h3>
-                            <div class="canvas-box">
-                                <canvas id="mainDonut"></canvas>
+                        <div class="card chart-container">
+                            <h3>Spending Analysis</h3>
+                            <div class="canvas-wrapper">
+                                <canvas id="donutChart"></canvas>
                             </div>
                         </div>
-                        <div class="card entry-form">
-                            <h3>Quick Add</h3>
-                            <form id="ledger-form">
-                                <input type="text" id="desc-input" placeholder="What for?" required>
-                                <input type="number" id="amt-input" placeholder="Amount (negative for expense)" required>
-                                <button type="submit" class="action-btn">Post Transaction</button>
+                        <div class="card form-container">
+                            <h3>New Transaction</h3>
+                            <form id="entry-form">
+                                <input type="text" id="item-desc" placeholder="Description" required>
+                                <div class="input-row">
+                                    <input type="number" id="item-amt" placeholder="Amount" required>
+                                    <select id="item-curr">
+                                        <option value="USD">USD</option>
+                                        <option value="INR">INR</option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="submit-btn">Add Entry</button>
                             </form>
                         </div>
                     </div>
                 </div>
 
-                <div id="transactions-section" class="view-panel hidden">
+                <div id="transactions-section" class="panel hidden">
                     <div class="card">
-                        <h3>Detailed History</h3>
-                        <ul id="history-list" class="ledger-list"></ul>
+                        <h3>Full History</h3>
+                        <ul id="history-list" class="ledger"></ul>
                     </div>
                 </div>
 
-                <div id="reports-section" class="view-panel hidden">
+                <div id="reports-section" class="panel hidden">
                     <div class="card">
-                        <h3>Balance Trend</h3>
-                        <div class="canvas-box" style="height: 400px;">
-                            <canvas id="trendLine"></canvas>
+                        <h3>Financial Trend</h3>
+                        <div class="canvas-wrapper" style="height: 400px;">
+                            <canvas id="lineTrend"></canvas>
                         </div>
                     </div>
                 </div>
 
-                <div id="budget-section" class="view-panel hidden">
+                <div id="budget-section" class="panel hidden">
                     <div class="card">
-                        <h3>Goal Tracking</h3>
-                        <div class="goal-container">
-                            <p>Monthly Target: $5,000.00</p>
-                            <div class="bar-outer">
-                                <div id="bar-inner" class="bar-fill"></div>
-                            </div>
-                            <small id="goal-stat" class="muted-text"></small>
+                        <h3>Savings Target ($5,000)</h3>
+                        <div class="progress-outer">
+                            <div id="progress-inner" class="progress-bar"></div>
                         </div>
+                        <p id="progress-label" class="text-muted"></p>
                     </div>
                 </div>
             </div>
