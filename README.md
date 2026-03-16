@@ -1,32 +1,61 @@
-# FinanceDash Pro — Interactive Financial Ledger
+# FinanceDash Pro
 
-## Project Description
-FinanceDash Pro is a high-performance, single-page application (SPA) designed for real-time personal finance management. Built entirely with Vanilla JavaScript, the platform allows users to track income and expenses across multiple currencies (USD/INR) with automatic conversion. It provides a centralized dashboard for financial oversight, data visualization, and persistent record-keeping.
+A personal finance tracker built with vanilla HTML, CSS, and JavaScript. Tracks income and expenses, manages savings goals, monitors recurring bills, and gives spending insights — all stored locally in the browser.
 
-## Problem Statement
-Individual financial tracking is often fragmented, and users frequently deal with multiple currencies without a clear way to see their unified net worth. FinanceDash Pro solves this by providing a responsive interface that automates currency conversion via live market rates, calculates balances instantly, and offers visual trend analysis to improve financial literacy.
+## Features
 
-## Features Implemented
-* **Multi-Currency Support**: Integrated a currency selector (USD/INR) that automatically converts INR entries to the base USD value for unified reporting.
-* **External API Integration**: Uses the `Fetch API` to retrieve real-time exchange rates from an external service to ensure conversion accuracy.
-* **Interactive Charts**: Utilizes Chart.js for real-time spending analysis (Doughnut) and balance history trends (Line graph).
-* **Single-Page Architecture**: A custom navigation system that toggles between Dashboard, Transactions, Reports, and Budget views without page reloads.
-* **Data Persistence**: Full integration with the `LocalStorage API` to save transaction history across browser sessions.
-* **Automated Budgeting**: A progress tracking system that dynamically calculates percentage completion against a $5,000 monthly target.
+- **Dashboard** — Net worth, income, and expense summary cards with an animated counter and a financial health score bar
+- **Transactions** — Add income or expense entries (USD or INR), search and filter by category or type, delete individual entries
+- **Savings Goals** — Create goals with a target amount, track progress with a visual bar, get confetti 🎉 when you hit 100%
+- **Recurring Bills** — Log subscriptions and bills with due dates; see overdue/upcoming warnings
+- **Insights** — Savings rate, top spending categories, month summary, and smart tips
+- **Reports** — Line chart showing balance trend over time
+- **Budget** — Set a savings target and track how close you are
+- **Streak tracker** 🔥 — Shows how many consecutive days you've logged transactions
+- **Live USD/INR rate** — Pulled from exchangerate-api.com on load
 
-## DOM Concepts Used
-* **Dynamic Element Creation**: Leveraging `document.createElement` and `appendChild` to render the transaction ledger based on user input.
-* **Event-Driven Programming**: Implementation of `addEventListener` for form submissions, navigation switching, and interactive chart updates.
-* **State Synchronization**: Logic that ensures the internal JavaScript data array and the DOM (Net Worth, Income, Expenses) stay perfectly in sync.
-* **Conditional Rendering**: Managed section visibility using CSS class toggling (`hidden`) to create a fluid SPA experience.
-* **Attribute Management**: Used `getAttribute` and `data-` attributes to handle navigation logic and unique transaction identification.
+## Tech Stack
 
-## Steps to Run the Project
-1. Clone the repository: `git clone https://github.com/SRISANJAYG/personal-finance-dashboard.git`
-2. Navigate to the project directory.
-3. Open `index.html` in any modern web browser.
-4. Ensure you have an active internet connection for live currency rate fetching.
+| Layer | Tool |
+|---|---|
+| Structure | HTML5 |
+| Styling | CSS3 (custom properties, glassmorphism, animations) |
+| Logic | Vanilla JavaScript (no frameworks) |
+| Charts | Chart.js (CDN) |
+| Storage | localStorage |
+| Font | Plus Jakarta Sans (Google Fonts) |
 
-## Known Limitations
-* Data is stored locally; clearing browser cache will reset the application data.
-* Live currency conversion requires an internet connection; it defaults to a static rate if the API is unreachable.
+## Getting Started
+
+Just open `index.html` in any modern browser — no build step, no dependencies to install.
+
+If you use VS Code, the **Live Server** extension works great:
+1. Right-click `index.html`
+2. Select **Open with Live Server**
+
+## Project Structure
+
+```
+personal_finance/
+├── index.html      — App layout and markup
+├── style.css       — All styles (Paylix-inspired dark theme)
+├── script.js       — All app logic and DOM interactions
+└── README.md       — This file
+```
+
+## Data Storage
+
+Everything is saved in `localStorage` under these keys:
+
+| Key | Contents |
+|---|---|
+| `finance_data` | Transaction history |
+| `savings_goals` | Savings goal list |
+| `recurring_bills` | Recurring bill list |
+| `savings_goal` | Budget target amount |
+
+Clearing browser storage will reset the app.
+
+## Design Inspiration
+
+UI inspired by the [Paylix](https://www.behance.net/gallery/244270373/Paylix-Budget-and-Expense-Tracker-App-UI-UX-Design) Finance Tracker concept on Behance — dark theme, large pill-shaped cards, vibrant purple accents, and clean bold typography.
